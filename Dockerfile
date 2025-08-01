@@ -87,7 +87,7 @@ RUN php artisan view:cache
 RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/laravel.conf /etc/apache2/ports.conf
 
 # Configure PHP para desenvolvimento.
-RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+# RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 ## TESTE LOCAL DA IMAGEM
 #

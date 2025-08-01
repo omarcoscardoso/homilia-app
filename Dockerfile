@@ -1,9 +1,7 @@
-# Use the official PHP image.
-# https://hub.docker.com/_/php
-FROM php:8.4-apache
+# Use a imagem oficial PHP.
+FROM php:8.2-apache
 
-# Configure PHP for Cloud Run.
-# Precompile PHP code with opcache.
+# Configure PHP para Cloud Run.
 RUN docker-php-ext-install -j "$(nproc)" opcache
 RUN set -ex; \
     { \
@@ -20,26 +18,34 @@ RUN set -ex; \
       echo "opcache.memory_consumption = 32"; \
     } > "$PHP_INI_DIR/conf.d/cloud-run.ini"
 
-# Instale as dependências do sistema necessárias (ex: para extensões PHP como pdo_mysql, mbstring, etc. - adicione conforme necessário para seu Laravel)
-# Exemplo para MySQL/MariaDB e outras extensões comuns:
+# Instale as dependências do sistema necessárias para PHP (ex: para extensões PHP como pdo_mysql, mbstring, etc.)
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libzip-dev \
     unzip \
     git \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pdo pdo_mysql zip opcache
+# Instale as extensões PHP comuns
+RUN docker-php-ext-install pdo pdo_mysql zip opcache mbstring exif pcntl bcmath gd sockets
 
 # Instale o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy in custom code from the host machine.
+# Copie o código da máquina host para o diretório de trabalho.
 WORKDIR /var/www/html
 COPY . ./
 
-# Instale as dependências do Laravel
+# Instale as dependências do Laravel via Composer
 RUN composer install --no-dev --optimize-autoloader
+
+# --- Início da seção para o Vite ---
+RUN npm install
+# Este comando criará o diretório public/build/ e o manifest.json
+RUN npm run build
+# --- Fim da seção para o Vite ---
 
 # Configure o Apache para o Laravel
 RUN a2enmod rewrite
@@ -56,20 +62,22 @@ RUN echo "<VirtualHost *:80>\n" \
 RUN a2ensite laravel.conf
 RUN a2dissite 000-default.conf
 
-# Ensure the webserver has permissions to execute index.php and for Laravel to write
+# Garanta que o webserver tenha permissões de execução e escrita para o Laravel
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage
 RUN chmod -R 775 /var/www/html/bootstrap/cache
 
-# Use the PORT environment variable in Apache configuration files.
-# https://cloud.google.com/run/docs/reference/container-contract#port
-RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
-# Ajuste: A linha acima deveria ser para o arquivo laravel.conf
+# Limpar e otimizar caches do Laravel
+RUN php artisan optimize:clear
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
+
+# Use a variável de ambiente PORT nas configurações do Apache.
+# Ajuste: A linha abaixo agora se aplica ao arquivo laravel.conf
 RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/laravel.conf /etc/apache2/ports.conf
 
-
-# Configure PHP for development.
-# Switch to the production php.ini for production operations.
+# Configure PHP para desenvolvimento.
+# Mude para php.ini-production para operações em produção.
 # RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-# https://github.com/docker-library/docs/blob/master/php/README.md#configuration
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"

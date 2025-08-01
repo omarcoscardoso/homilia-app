@@ -1,4 +1,4 @@
-FROM php:8.2-apache 
+FROM php:8.4-apache 
 
 # Configure PHP para Cloud Run.
 RUN docker-php-ext-install -j "$(nproc)" opcache
@@ -74,8 +74,8 @@ RUN a2dissite 000-default.conf
 
 # Garanta que o webserver tenha permissões de execução e escrita para o Laravel
 RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 775 /var/www/html/storage
-RUN chmod -R 775 /var/www/html/bootstrap/cache
+RUN chmod -R 777 /var/www/html/storage
+RUN chmod -R 777 /var/www/html/bootstrap/cache
 
 # Limpar e otimizar caches do Laravel
 RUN php artisan optimize:clear
@@ -88,3 +88,26 @@ RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/laravel.conf /etc/apach
 
 # Configure PHP para desenvolvimento.
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+
+## TESTE LOCAL DA IMAGEM
+#
+# docker build -t homilia-app:latest .
+#
+# docker run -p 8080:80 \
+#            --env APP_NAME="HomilIA" \
+#            --env APP_ENV="production" \
+#            --env APP_KEY="base64:CfqGMuEtBoOibR6hJvcCZ9IG+Fq2F/0wZlqMhzGeqFc=" \
+#            --env APP_DEBUG="true" \
+#            --env APP_URL="http://localhost:8080" \
+#            --env VITE_APP_NAME="HomilIA" \
+#            --env GEMINI_API_KEY="AIzaSyDGMdE1LQlwo1DifL1Kv7v1jmqPJnFA29YS" \
+#            --env SESSION_DRIVER="cookie" \
+#            --env CACHE_DRIVER="file" \
+#            --env BCRYPT_ROUNDS="12" \
+#            --env PORT="80" \
+#            homilia-app:latest
+
+# docker tag homilia-app:latest gcr.io/iprviamao-169920/homilia-app:latest
+
+# Em seguida, faça o push para o registro
+# docker push gcr.io/iprviamao-169920/homilia-app:latest

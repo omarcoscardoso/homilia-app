@@ -1,5 +1,4 @@
-# Use a imagem oficial PHP.
-FROM php:8.2-apache
+FROM php:8.2-apache 
 
 # Configure PHP para Cloud Run.
 RUN docker-php-ext-install -j "$(nproc)" opcache
@@ -18,17 +17,29 @@ RUN set -ex; \
       echo "opcache.memory_consumption = 32"; \
     } > "$PHP_INI_DIR/conf.d/cloud-run.ini"
 
-# Instale as dependências do sistema necessárias para PHP (ex: para extensões PHP como pdo_mysql, mbstring, etc.)
+# Instale as dependências do sistema operacional necessárias.
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libzip-dev \
     unzip \
     git \
     nodejs \
-    npm 
+    npm \
+    # libonig-dev \   
+    # libxml2-dev \  
+    # libfreetype6-dev \ 
+    # libjpeg62-turbo-dev \
+    # libpng-dev \   
+    # libwebp-dev \  
+    && rm -rf /var/lib/apt/lists/*
 
-# Instale as extensões PHP comuns
-RUN docker-php-ext-install pdo pdo_mysql zip opcache mbstring exif pcntl bcmath gd sockets
+# Instale as extensões PHP comuns.
+# NOTE: Para GD, use docker-php-ext-configure antes de docker-php-ext-install
+RUN docker-php-ext-install -j "$(nproc)" pdo pdo_mysql zip opcache mbstring exif pcntl bcmath sockets
+
+# Para a extensão GD, é comum precisar configurá-la primeiro:
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
+RUN docker-php-ext-install -j "$(nproc)" gd
 
 # Instale o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -73,10 +84,7 @@ RUN php artisan route:cache
 RUN php artisan view:cache
 
 # Use a variável de ambiente PORT nas configurações do Apache.
-# Ajuste: A linha abaixo agora se aplica ao arquivo laravel.conf
 RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/laravel.conf /etc/apache2/ports.conf
 
 # Configure PHP para desenvolvimento.
-# Mude para php.ini-production para operações em produção.
-# RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"

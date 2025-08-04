@@ -19,8 +19,6 @@ RUN apk add --no-cache \
         ctype \
         fileinfo \
         mbstring \
-        pdo \
-        tokenizer \
         xml \
         zip
 

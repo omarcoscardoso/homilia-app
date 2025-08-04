@@ -13,6 +13,7 @@ RUN apk add --no-cache \
         libzip-dev \
         libxml2-dev \
         zlib-dev \
+        oniguruma-dev \
     && docker-php-ext-install \
         bcmath \
         ctype \

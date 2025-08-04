@@ -8,19 +8,18 @@
 FROM php:8.2-fpm-alpine
 
 # Instala o Nginx e as dependências
-RUN apk add --no-cache \
-        nginx \
-        libzip-dev \
-        libxml2-dev \
-        zlib-dev \
-        oniguruma-dev \
-    && docker-php-ext-install \
-        bcmath \
-        ctype \
-        fileinfo \
-        mbstring \
-        xml \
-        zip
+RUN apk add --no-cache nginx 
+    #     libzip-dev \
+    #     libxml2-dev \
+    #     zlib-dev \
+    #     oniguruma-dev \
+    # && docker-php-ext-install \
+    #     bcmath \
+    #     ctype \
+    #     fileinfo \
+    #     mbstring \
+    #     xml \
+    #     zip
 
 # Remove a configuração padrão do PHP-FPM e copia as nossas.
 # COPY .docker/www.conf /usr/local/etc/php-fpm.d/www.conf
@@ -37,9 +36,9 @@ RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Otimiza o Laravel para produção
-RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
+# RUN php artisan config:cache && \
+#     php artisan route:cache && \
+#     php artisan view:cache
 
 # Expõe a porta que o Cloud Run espera
 EXPOSE 8080

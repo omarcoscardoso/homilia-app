@@ -1,25 +1,55 @@
 # Usa a imagem oficial do PHP 8.2 com FPM
 FROM php:8.2-fpm
 
-RUN apt-get update && apt-get install -y nginx
-RUN mkdir -p /var/www/html
+# Instala as dependências do sistema necessárias para o Laravel
+# E o Composer para gerenciar as dependências do PHP
+RUN apt-get update && \
+    apt-get install -y \
+        nginx \
+        git \
+        unzip \
+        libzip-dev \
+        libonig-dev \
+        libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
+# Instala as extensões PHP necessárias para o Laravel
+RUN docker-php-ext-install pdo_mysql zip mbstring exif pcntl
+
+# Instala o Composer
+# COPY --from=composer:latest /usr/local/bin/composer /usr/local/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+
+# Cria um diretório para o projeto
+WORKDIR /var/www/html
+
+# Copia o código do Laravel para o diretório
+COPY . .
+
+# Instala as dependências do projeto
+RUN composer install --no-dev --optimize-autoloader
+
+# Configura as permissões
+RUN chown -R www-data:www-data /var/www/html/storage
+RUN chmod -R 775 /var/www/html/storage
+RUN chown -R www-data:www-data /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/bootstrap/cache
+
+# Copia a configuração do Nginx para o container
 COPY .docker/nginx.conf /etc/nginx/sites-available/default
-
+# Habilita o site no Nginx
 RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
-COPY index.php /var/www/html/index.php
-
-WORKDIR /var/www/html
+# Expõe a porta 80
 EXPOSE 80
 
-# Adiciona um script de inicialização para iniciar o Nginx e o PHP-FPM
+# Adiciona um script de inicialização para o Nginx e o PHP-FPM
 COPY .docker/start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
-# Usa o script de inicialização
+# Define o comando de inicialização
 CMD ["/usr/local/bin/start.sh"]
-
 
 ## TESTE LOCAL DA IMAGEM
 #

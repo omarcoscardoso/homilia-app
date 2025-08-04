@@ -115,7 +115,7 @@ class GeminiHomiliaController extends Controller
         $filename = 'esboco_homilIA_' . now()->format('Ymd_His') . '.pdf';
 
         // Retorna o PDF para download
-        // return $pdf->download($filename);
-        return $pdf->stream($filename);
+        return $pdf->download($filename);
+        // return $pdf->stream($filename);
     }
 }

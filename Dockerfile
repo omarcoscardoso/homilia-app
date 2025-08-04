@@ -13,8 +13,12 @@ COPY index.php /var/www/html/index.php
 WORKDIR /var/www/html
 EXPOSE 80
 
-# Inicia o PHP-FPM e o Nginx juntos
-CMD service php8.2-fpm start && nginx -g "daemon off;"
+# Adiciona um script de inicialização para iniciar o Nginx e o PHP-FPM
+COPY .docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Usa o script de inicialização
+CMD ["/usr/local/bin/start.sh"]
 
 
 ## TESTE LOCAL DA IMAGEM

@@ -1,7 +1,6 @@
-<div class="flex flex-col md:flex-row h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+<div class="flex flex-col md:flex-row min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
     {{-- Lado Esquerdo: Formulário - Fixo --}}
     <div class="flex-none w-full md:w-1/3 bg-white dark:bg-gray-800 shadow-lg md:shadow-none p-6 transition-colors duration-300 md:sticky md:top-0 md:h-screen">    
-    <!-- <div class="flex-none w-full md:w-1/3 bg-white dark:bg-gray-800 shadow-lg md:shadow-none p-6 transition-colors duration-300 overflow-y-auto"> -->
         <div class="w-full max-w-sm flex flex-col items-center space-y-0 mx-auto">
             {{-- Logo --}}
             <div class="mb-8">
@@ -41,15 +40,6 @@
                     wire:target="generateHomilia"
                 />
 
-                <!-- <button
-                    type="submit"
-                    class="w-full bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out shadow-md"
-                    wire:loading.attr="disabled"
-                    wire:target="generateHomilia"
-                    wire:loading.class="opacity-70 cursor-not-allowed"
-                >
-                    Escrever esboço
-                </button> -->
                 <button 
                     type="submit" 
                     class="w-full bg-blue-600 text-white py-3 px-6 rounded-full 

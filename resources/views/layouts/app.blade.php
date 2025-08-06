@@ -3,16 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    
     <title>{{ config('app.name', 'Laravel') }}</title>
+    
+    <link rel="manifest" href="/build/manifest.webmanifest" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     @livewireStyles
-
   </head>
    <body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
         @yield('content')
         @stack('scripts')
         @livewireScripts
+
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/build/sw.js');
+            }
+        </script>
     </body>
 </html>

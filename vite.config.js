@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
@@ -9,7 +8,6 @@ export default defineConfig({
         outDir: 'public/build'
     },
     plugins: [
-        tailwindcss(),
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
@@ -47,14 +45,21 @@ export default defineConfig({
             manifest: {
                 name: 'HomilIA App',
                 short_name: 'Homilia',
+                id: "homilia-app",
                 description: 'Um aplicativo que te ajuda a gerar esboço de sermão.',
                 lang: 'pt-BR',
-                start_url: '/',
+                start_url: '.',
                 scope: '/',
                 display: 'standalone',
                 background_color: '#ffffff',
                 theme_color: '#1F2937',
                 icons: [
+                    {
+                        src: '../images/icons/icon-48x48.png',
+                        sizes: '48x48',
+                        type: 'image/png',
+                        purpose: 'any'
+                    },
                     {
                         src: '../images/icons/icon-72x72.png',
                         sizes: '72x72',
@@ -83,7 +88,21 @@ export default defineConfig({
                         src: '../images/icons/icon-512x512.png',
                         sizes: '512x512',
                         type: 'image/png',
-                        purpose: 'maskable any'
+                        purpose: 'any'
+                    }
+                ], 
+                screenshots: [
+                    {
+                      src: "../images/icons/screenshot-mobile.png",
+                      sizes: "750x1334",
+                      type: "image/png",
+                      form_factor: "narrow"
+                    },
+                    {
+                      src: "../images/icons/screenshot-desktop.png",
+                      sizes: "2388x1668",
+                      type: "image/png",
+                      form_factor: "wide"
                     }
                 ]
             }

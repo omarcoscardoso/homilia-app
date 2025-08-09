@@ -9,7 +9,7 @@
                 {{-- Logo --}}
                 <div class="mb-8">
                     <a href="{{ route('gemini-homilia.create') }}">
-                        <img class="w-auto h-auto max-h-[89px]" src="https://storage.googleapis.com/homilia/logo_homilia.png" alt="HomiliA Logo">
+                        <img class="w-auto h-auto max-h-[89px]" src="https://storage.googleapis.com/homilia/logo_homilia.webp" alt="HomiliA Logo">
                     </a>
                     <p class="text-center mt-1 text-sm text-gray-500 dark:text-gray-400">
                         Seu Gerador de Esboços com IA.
@@ -92,7 +92,6 @@
                             <div class="w-48 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
                         </div>
                     </div>
-                    <p class="mt-4 text-gray-320 dark:text-gray-500">Aguarde, gerando seu esboço...</p>
                 </div>
             </div>
             @if($message)
@@ -106,7 +105,7 @@
 
         {{-- Botão de Feedback no canto inferior direito --}}
         <div class="fixed bottom-4 right-4 z-50">
-            <button wire:click="$set('showFeedbackModal', true)" class="bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out">
+            <button wire:click="$set('showFeedbackModal', true)" class="bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 ease-in-out" aria-label="Dar feedback">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>

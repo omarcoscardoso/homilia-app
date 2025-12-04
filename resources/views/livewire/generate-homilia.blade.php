@@ -157,7 +157,56 @@
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
+
+    {{-- Modal "Sobre" --}}
+    <div x-data="{ showAboutModal: false }"
+         @open-about-modal.window="showAboutModal = true"
+         x-show="showAboutModal"
+         x-cloak
+         @keydown.escape.window="showAboutModal = false"
+         x-transition:enter="ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[60] overflow-y-auto p-4 flex items-center justify-center">
+
+        {{-- Overlay --}}
+        <div x-show="showAboutModal" @click="showAboutModal = false" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity z-10"></div>
+
+        {{-- Conteúdo do Modal --}}
+        <div @click.stop
+             x-show="showAboutModal"
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+             x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+             class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full z-20 relative">
+            <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="about-modal-title">
+                            Sobre o HomiliA
+                        </h3>
+                        <div class="mt-4 text-sm text-gray-600 dark:text-gray-300 space-y-4">
+                            <p>O <strong>HomiliA</strong> é uma ferramenta inovadora projetada para auxiliar pastores, pregadores e estudantes de teologia na elaboração de esboços de sermões e homilias. Utilizando o poder da Inteligência Artificial, nosso objetivo é fornecer um ponto de partida sólido e inspirador para suas pregações.</p>
+                            <p>Basta inserir um tema, uma passagem bíblica ou uma ideia central, e nossa IA gerará uma estrutura coesa, com pontos principais, sub-pontos e referências, permitindo que você se concentre no mais importante: a mensagem que Deus colocou em seu coração.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-900 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button @click="showAboutModal = false" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-white shadow-sm dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2 mt-auto transition-colors duration-300">
         <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
             <p class="text-sm text-gray-500 md:text-center dark:text-gray-400">
@@ -165,7 +214,7 @@
             </p>
             <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
                 <li>
-                    <a href="#" class="hover:underline me-4 md:me-6">Sobre</a>
+                    <button @click="$dispatch('open-about-modal')" class="hover:underline me-4 md:me-6">Sobre</button>
                 </li>
                 <li>
                     <a href="#" class="hover:underline me-4 md:me-6">Fale Conosco</a>

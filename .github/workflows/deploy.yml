@@ -62,3 +62,10 @@ jobs:
           region: ${{ env.REGION }}
           source: . 
           flags: '--allow-unauthenticated' 
+          env_vars: |
+            APP_ENV=production
+            APP_DEBUG=false
+            APP_KEY=${{ secrets.APP_KEY }}
+            GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
+            SESSION_DRIVER=cookie
+            CACHE_STORE=file

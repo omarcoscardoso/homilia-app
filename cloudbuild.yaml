@@ -1,14 +1,21 @@
 steps:
-  # 1. Constrói a imagem Docker a partir do Dockerfile
+  # 1. Constrói a imagem Docker aplicando a tag do Commit e a tag 'latest'
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/homilia-app-repo/free-homilia-app-br:$COMMIT_SHA', '.']
+    args: 
+      - 'build'
+      - '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/homilia-app-repo/free-homilia-app-br:$COMMIT_SHA'
+      - '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/homilia-app-repo/free-homilia-app-br:latest'
+      - '.'
 
-  # 2. Envia a imagem para o Artifact Registry
+  # 2. Envia as imagens para o Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/homilia-app-repo/free-homilia-app-br:$COMMIT_SHA']
 
-  # 3. Faz o deploy da imagem no Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/homilia-app-repo/free-homilia-app-br:latest']
+
+  # 3. Faz o deploy no Cloud Run usando a imagem estável gcloud oficial
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:stable'
     entrypoint: gcloud
     args:
       - 'run'
